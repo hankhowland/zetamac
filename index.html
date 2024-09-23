@@ -1,0 +1,47 @@
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zetamac Mr. Myers</title>
+</head>
+<div>
+    <h1>Zetamac Extra Credit Challenge</h1>
+    
+</div>
+<div>
+    <a href="game.html" style="font-size: 20px">Play Level 1</a>
+</div>
+<div>
+    <h2>Level 1 Leaderboard</h2>
+    <table style="border-collapse: collapse;" id="level-1-leaderboard">
+        <tr><th>Rank</th></th><th>Name</th><th>Period</th><th>Score</th></tr>
+    </table>
+</div>
+
+<script>
+    const url = "https://script.google.com/macros/s/AKfycby-c2Q0GZUdu-4NVLmF_4DWN8RrDRbzOXcvTU1CG6-x4NthCWOdTK2kSFVqgm1FfpS8vg/exec"
+    fetch(url)
+        .then((response) => response.json())
+        .then(({ data }) => {
+            level1Leaderboard = document.getElementById('level-1-leaderboard').innerHTML
+            let rank = 1;
+            data.forEach((row) => {
+                if (rank > 50) {
+                    return;
+                }
+                level1Leaderboard = level1Leaderboard + `<tr><td>${rank}</td><td>${row[0]}</td><td>${row[1]}</td><td>${row[3]}</td></tr>`;
+                rank += 1;
+            })
+            
+            document.getElementById('level-1-leaderboard').innerHTML = level1Leaderboard;
+        })
+        .catch((error) => console.error('!!!!!!!!', error));
+</script>
+
+<style>
+    table, th, td {
+  border: 1px solid;
+  padding: 5px 10px;
+  font-size: 15px;
+}
+</style>

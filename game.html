@@ -1,0 +1,85 @@
+<div style="display:flex; width:100%;">
+    <div style="flex:1"></div>
+    <div style="width: 500px;">
+        <div><h1>Level 1</h1></div>
+        <div style="font-size: 20px;" id="timer">Time:</div>
+        <div style="font-size: 20px;" id="your-score"></div>
+        <h1 id="math-question"></h1>
+        <input style="font-size: 20px; width: 100px" id="answer-box" />
+        <h3 id="times-up"></h3>
+        <div id="end-game-form" style="font-size: 20px;">
+            <a style="font-size: 20px;" href="game.html"><b>Try again</b></a> or...
+            <div style="padding: 7px; border: 1px solid black; margin-top:10px;">
+                <form id = "form" method = "POST">
+                    <div>Enter your information and press the button to submit your score.</div>
+                    <div style="margin-top: 10px">Name (First and Last): <input type="text" name="Name" id="name"/></div>
+                    <div style="margin-top: 10px;">Period: <input type="text" name="Period" id="period"/></div>
+                    <div style="margin-top: 10px;">Score: <input readonly type="text" name="Score" id="score-input"/></div>
+                    <input hidden name="Level" value="1" />
+                    <div style="margin-top: 10px;"><button style="padding: 2px 3px;" id="submit-button" type="submit"><b>Submit Score to Leaderboard</b></button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+<div style="flex:1"></div>
+</div>
+
+
+<script>
+    // timer
+    let numCorrect = 0;
+    var seconds = 120;
+    const timer = document.getElementById("timer");
+    let intervalId = 0;
+    const yourScore = document.getElementById('your-score');
+    yourScore.innerHTML = 'Score: 0';
+    const answerBox = document.getElementById("answer-box");
+    const endGameForm = document.getElementById("end-game-form");
+    endGameForm.style.display = 'none';
+    document.getElementById('form').action = "https://script.google.com/macros/s/AKfycby-c2Q0GZUdu-4NVLmF_4DWN8RrDRbzOXcvTU1CG6-x4NthCWOdTK2kSFVqgm1FfpS8vg/exec";
+    const decrementSeconds = () => {
+        if (seconds === 0) {
+            document.getElementById("times-up").innerHTML = `Time's up! You scored ${numCorrect}.`;
+            endGameForm.style.display = 'block';
+            clearInterval(intervalId);
+            answerBox.disabled = true;
+            document.getElementById('score-input').value = numCorrect;
+            return;
+        }   
+        seconds = seconds - 1;
+        timer.innerHTML = `Time: ${seconds}`;
+
+    }
+    intervalId = setInterval(decrementSeconds, 1000);
+
+    // problem
+    const mathQuestion = document.getElementById("math-question");
+    function randomIntFromInterval(min, max) { 
+        return Math.floor(Math.random() * (max - min + 1) + min);
+    }
+    let num1 = 0;
+    let num2 = 0;
+    const setNewQuestion = () => {
+        num1 = randomIntFromInterval(2, 12);
+        num2 = randomIntFromInterval(2, 12);
+        mathQuestion.innerHTML = `${num1} x ${num2}`;
+    }
+    setNewQuestion();
+    
+
+    
+    const checkAnswer = (e) => {
+        if (num1*num2 === parseInt(e.target.value)) {
+            numCorrect += 1;
+            yourScore.innerHTML = `Score: ${numCorrect}`;
+            e.target.value = '';
+            setNewQuestion();
+        }
+    }
+    answerBox.addEventListener('input', checkAnswer);
+
+    document.getElementById('submit-button').addEventListener('click', submitScore);
+    
+
+
+</script>
