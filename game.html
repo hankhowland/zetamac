@@ -8,7 +8,7 @@
         <input style="font-size: 30px; width: 100px" id="answer-box" />
         <h3 id="times-up"></h3>
         <div id="end-game-form" style="font-size: 20px;">
-            <a style="font-size: 20px;" href="game.html"><b>Try again</b></a> or...
+            <a style="font-size: 20px;" id="try-again-link" href=""><b>Try again</b></a> or...
             <div style="padding: 7px; border: 1px solid black; margin-top:10px;">
                 <form id = "form" method = "POST">
                     <div>Enter your information and press the button to submit your score.</div>
@@ -31,7 +31,7 @@
     const level = urlParams.get('level')
     document.getElementById('level-title').innerHTML = `Level ${level}`;
     let correctAnswer = 0;
-    let operation = 'multiplication';
+    document.getElementById('try-again-link').url = `game.html?level=${level}`;
     // timer
     let numCorrect = 0;
     var seconds = 120;
@@ -72,7 +72,6 @@
             num2 = randomIntFromInterval(2, 12);
             mathQuestion.innerHTML = `${num1} x ${num2}`;
             correctAnswer = num1*num2;
-            operation = 'multiplication';
         } else if (level == 2) {
             let multiplication = randomIntFromInterval(0,1);
             if (multiplication) {
@@ -80,7 +79,6 @@
                 num2 = randomIntFromInterval(2, 12);
                 mathQuestion.innerHTML = `${num1} x ${num2}`;
                 correctAnswer = num1*num2;
-                operation = 'multiplication'
             } else {
                 let addition = randomIntFromInterval(0,1);
                 if (addition) {
@@ -88,13 +86,38 @@
                     num2 = randomIntFromInterval(2, 50);
                     mathQuestion.innerHTML = `${num1} + ${num2}`;
                     correctAnswer = num1+num2;
-                    operation = 'addition';
                 } else {
                     num1 = randomIntFromInterval(2, 50);
                     num2 = randomIntFromInterval(num1, 100);
                     mathQuestion.innerHTML = `${num2} - ${num1}`;
                     correctAnswer = num2-num1;
-                    operation = 'subtraction';
+                }
+            }
+        } else if (level == 3) {
+            let mult_div = randomIntFromInterval(0,1);
+            if (mult_div) {
+                num1 = randomIntFromInterval(2, 12);
+                num2 = randomIntFromInterval(2, 100);
+                let mult = randomIntFromInterval(0,1);
+                if (mult) {
+                    mathQuestion.innerHTML = `${num1} x ${num2}`;
+                    correctAnswer = num1*num2;
+                } else {
+                    mathQuestion.innerHTML = `${num1*num2} / ${num1}`;
+                    correctAnswer = num2;
+                }
+            } else {
+                let addition = randomIntFromInterval(0,1);
+                if (addition) {
+                    num1 = randomIntFromInterval(2, 100);
+                    num2 = randomIntFromInterval(2, 100);
+                    mathQuestion.innerHTML = `${num1} + ${num2}`;
+                    correctAnswer = num1+num2;
+                } else {
+                    num1 = randomIntFromInterval(2, 50);
+                    num2 = randomIntFromInterval(num1, 100);
+                    mathQuestion.innerHTML = `${num2} - ${num1}`;
+                    correctAnswer = num2-num1;
                 }
             }
         } else {
