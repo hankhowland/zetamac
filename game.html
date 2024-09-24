@@ -1,11 +1,11 @@
 <div style="display:flex; width:100%;">
     <div style="flex:1"></div>
     <div style="width: 500px;">
-        <div><h1>Level 1</h1></div>
+        <div><h1 id="level-title"></h1></div>
         <div style="font-size: 20px;" id="timer">Time:</div>
         <div style="font-size: 20px;" id="your-score"></div>
-        <h1 id="math-question"></h1>
-        <input style="font-size: 20px; width: 100px" id="answer-box" />
+        <h1 style="font-size: 40px;" id="math-question"></h1>
+        <input style="font-size: 30px; width: 100px" id="answer-box" />
         <h3 id="times-up"></h3>
         <div id="end-game-form" style="font-size: 20px;">
             <a style="font-size: 20px;" href="game.html"><b>Try again</b></a> or...
@@ -15,8 +15,8 @@
                     <div style="margin-top: 10px">Name (First and Last): <input type="text" name="Name" id="name"/></div>
                     <div style="margin-top: 10px;">Period: <input type="text" name="Period" id="period"/></div>
                     <div style="margin-top: 10px;">Score: <input readonly type="text" name="Score" id="score-input"/></div>
-                    <input hidden name="Level" value="1" />
-                    <div style="margin-top: 10px;"><button style="padding: 2px 3px;" id="submit-button" type="submit"><b>Submit Score to Leaderboard</b></button></div>
+                    <input hidden id="level" name="Level" value="1" />
+                    <div style="margin-top: 10px;"><button style="padding: 2px 3px;" id="submit-button" type="submit"><b>Submit Score to Leaderboard</b></button><br>Only press the button once! Sometimes it takes a few seconds.</div>
                 </form>
             </div>
         </div>
@@ -26,6 +26,12 @@
 
 
 <script>
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const level = urlParams.get('level')
+    document.getElementById('level-title').innerHTML = `Level ${level}`;
+    let correctAnswer = 0;
+    let operation = 'multiplication';
     // timer
     let numCorrect = 0;
     var seconds = 120;
@@ -39,6 +45,7 @@
     document.getElementById('form').action = "https://script.google.com/macros/s/AKfycby-c2Q0GZUdu-4NVLmF_4DWN8RrDRbzOXcvTU1CG6-x4NthCWOdTK2kSFVqgm1FfpS8vg/exec";
     const decrementSeconds = () => {
         if (seconds === 0) {
+            document.getElementById("level").value = level;
             document.getElementById("times-up").innerHTML = `Time's up! You scored ${numCorrect}.`;
             endGameForm.style.display = 'block';
             clearInterval(intervalId);
@@ -60,16 +67,46 @@
     let num1 = 0;
     let num2 = 0;
     const setNewQuestion = () => {
-        num1 = randomIntFromInterval(2, 12);
-        num2 = randomIntFromInterval(2, 12);
-        mathQuestion.innerHTML = `${num1} x ${num2}`;
+        if (level == 1) {
+            num1 = randomIntFromInterval(2, 12);
+            num2 = randomIntFromInterval(2, 12);
+            mathQuestion.innerHTML = `${num1} x ${num2}`;
+            correctAnswer = num1*num2;
+            operation = 'multiplication';
+        } else if (level == 2) {
+            let multiplication = randomIntFromInterval(0,1);
+            if (multiplication) {
+                num1 = randomIntFromInterval(2, 12);
+                num2 = randomIntFromInterval(2, 12);
+                mathQuestion.innerHTML = `${num1} x ${num2}`;
+                correctAnswer = num1*num2;
+                operation = 'multiplication'
+            } else {
+                let addition = randomIntFromInterval(0,1);
+                if (addition) {
+                    num1 = randomIntFromInterval(2, 50);
+                    num2 = randomIntFromInterval(2, 50);
+                    mathQuestion.innerHTML = `${num1} + ${num2}`;
+                    correctAnswer = num1+num2;
+                    operation = 'addition';
+                } else {
+                    num1 = randomIntFromInterval(2, 50);
+                    num2 = randomIntFromInterval(num1, 100);
+                    mathQuestion.innerHTML = `${num2} - ${num1}`;
+                    correctAnswer = num2-num1;
+                    operation = 'subtraction';
+                }
+            }
+        } else {
+            alert("that level doesn't exist");
+        }
     }
     setNewQuestion();
     
 
     
     const checkAnswer = (e) => {
-        if (num1*num2 === parseInt(e.target.value)) {
+        if (correctAnswer == parseInt(e.target.value)) {
             numCorrect += 1;
             yourScore.innerHTML = `Score: ${numCorrect}`;
             e.target.value = '';
@@ -77,8 +114,6 @@
         }
     }
     answerBox.addEventListener('input', checkAnswer);
-
-    document.getElementById('submit-button').addEventListener('click', submitScore);
     
 
 

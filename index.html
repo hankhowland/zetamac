@@ -8,22 +8,36 @@
     <h1>Zetamac Extra Credit Challenge</h1>
     
 </div>
-<div>
-    <a href="game.html" style="font-size: 20px">Play Level 1</a>
+<div style="margin-bottom: 10px;">
+    <a href="game.html?level=1" style="font-size: 20px;">Play Level 1</a>
+    (Score 50 or more for 5 points extra credit)
+</div>
+<div></div>
+    <a href="game.html?level=2" style="font-size: 20px">Play Level 2</a>
     (Score 50 or more for 5 points extra credit)
     <br>
     <br>
     <br>
 </div>
-<div>
-    <h2>Level 1 Leaderboard</h2>
-    <table style="border-collapse: collapse;" id="level-1-leaderboard">
-        <tr><th>Rank</th></th><th>Name</th><th>Period</th><th>Score</th></tr>
-    </table>
+    
+<div style="display: flex; flex-direction:row; gap: 40px;">
+    <div>
+        <h2>Level 1 Leaderboard</h2>
+        <table style="border-collapse: collapse;" id="level-1-leaderboard">
+            <tr><th>Rank</th></th><th>Name</th><th>Period</th><th>Score</th></tr>
+        </table>
+    </div>
+    <div>
+        <h2>Level 2 Leaderboard</h2>
+        <table style="border-collapse: collapse;" id="level-2-leaderboard">
+            <tr><th>Rank</th></th><th>Name</th><th>Period</th><th>Score</th></tr>
+        </table>
+    </div>
 </div>
 
 <script>
-    names = [];
+    level1Names = [];
+    level2Names = [];
     function compare(a, b) {
         return b[3] - a[3];
     }
@@ -33,19 +47,32 @@
         .then(({ data }) => {
             data.sort(compare)
             level1Leaderboard = document.getElementById('level-1-leaderboard').innerHTML
-            let rank = 1;
+            level2Leaderboard = document.getElementById('level-2-leaderboard').innerHTML
+            let level1Rank = 1;
+            let level2Rank = 1;
             data.forEach((row) => {
-                if (rank > 50) {
-                    return;
-                }
-                if (!names.includes(row[0])) {
-                    names.push(row[0]);
-                    level1Leaderboard = level1Leaderboard + `<tr><td>${rank}</td><td>${row[0]}</td><td>${row[1]}</td><td>${row[3]}</td></tr>`;
-                    rank += 1;
+                if (row[2] == 1 && !level1Names.includes(row[0])) {
+                    if (level1Rank > 50) {
+                        return;
+                    }
+                    let newRow = `<tr><td>${level1Rank}</td><td>${row[0]}</td><td>${row[1]}</td><td>${row[3]}</td></tr>`;
+                    level1Names.push(row[0]);
+                    level1Leaderboard = level1Leaderboard + newRow;
+                    level1Rank += 1;
+                } else if (row[2] == 2 && !level2Names.includes(row[0])) {
+                    console.log("level 2")
+                    if (level2Rank > 50) {
+                        return;
+                    }
+                    let newRow = `<tr><td>${level2Rank}</td><td>${row[0]}</td><td>${row[1]}</td><td>${row[3]}</td></tr>`;
+                    level2Names.push(row[0]);
+                    level2Leaderboard = level2Leaderboard + newRow;
+                    level2Rank += 1;
                 }
             })
             
             document.getElementById('level-1-leaderboard').innerHTML = level1Leaderboard;
+            document.getElementById('level-2-leaderboard').innerHTML = level2Leaderboard;
         })
         .catch((error) => console.error('!!!!!!!!', error));
 </script>
